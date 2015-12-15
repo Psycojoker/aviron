@@ -1,6 +1,17 @@
 import curses
 from redbaron import RedBaron
 
+COLORS = {}
+
+
+def init_colors():
+    for number, (name, fg, bg) in enumerate((
+           ("default", curses.COLOR_WHITE, curses.COLOR_BLACK),
+           ("selected", curses.COLOR_BLACK, curses.COLOR_YELLOW),
+        ), 1):
+        curses.init_pair(number, fg, bg)
+        COLORS[name] = curses.color_pair(number)
+
 
 class Window(object):
     def __init__(self, ncurse_window, red):
@@ -44,6 +55,7 @@ class RenderingBuffer(object):
 
 
 def main(ncurse_window):
+    init_colors()
     curses.curs_set(0)
     red = RedBaron(open(__file__, "r").read())
     Window(ncurse_window=ncurse_window, red=red).loop()
