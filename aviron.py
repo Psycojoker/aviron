@@ -8,14 +8,18 @@ class Window(object):
         self.ncurse_window = ncurse_window
 
     def render(self):
-        self.ncurse_window.addstr(self.red.dumps())
+        self.ncurse_window.addstr(0, 0, self.red.dumps())
         self.ncurse_window.refresh()
-        self.ncurse_window.getch()
+
+    def loop(self):
+        while 42:
+            self.render()
+            self.ncurse_window.getch()
 
 
 def main(ncurse_window):
     red = RedBaron(open(__file__, "r").read())
-    Window(ncurse_window=ncurse_window, red=red).render()
+    Window(ncurse_window=ncurse_window, red=red).loop()
 
 
 curses.wrapper(main)
