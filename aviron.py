@@ -62,9 +62,25 @@ class RenderingBuffer(object):
             if line_number >= height:
                 break
 
-            if y1 <= line_number <= y2:
-                # don't add a "\n" at the end of window, otherwise curses crash
-                to_return.append((i[:width - 1] + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
+            if y1 == line_number == y2:
+                if x1 != 0:
+                    to_return.append((i[:x1], COLORS["default"]))
+
+                to_return.append((i[x1:x2], COLORS["selected"]))
+                to_return.append((i[x2:] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
+
+            elif y1 == line_number:
+                if x1 != 0:
+                    to_return.append((i[:x1], COLORS["default"]))
+                to_return.append((i[x1:] + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
+
+            elif y1 < line_number < y2:
+                to_return.append((i + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
+
+            elif line_number == y2:
+                to_return.append((i[:x2], COLORS["selected"]))
+                to_return.append((i[x2:] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
+
             else:
                 # don't add a "\n" at the end of window, otherwise curses crash
                 to_return.append((i[:width - 1] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
@@ -80,9 +96,9 @@ class Cursor(object):
     def get_cursor_square(self):
         bounding_box = self.current.absolute_bounding_box
 
-        left1, right1 = bounding_box.top_left.to_tuple()
-        left2, right2 = bounding_box.bottom_right.to_tuple()
-        return left1 - 1, right1 - 1, left2 - 1, right2 - 1
+        y1, x1 = bounding_box.top_left.to_tuple()
+        y2, x2 = bounding_box.bottom_right.to_tuple()
+        return y1 - 1, x1 - 1, y2 - 1, x2
 
     def go_down(self):
         self.current = self.current.next if self.current.next is not None else self.current
