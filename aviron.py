@@ -53,10 +53,7 @@ class RenderingBuffer(object):
                 break
 
             # don't add a "\n" at the end of window, otherwise curses crash
-            if line_number == height - 1:
-                to_return.append((i[:width - 1], COLORS["default"]))
-            else:
-                to_return.append((i[:width - 1] + "\n", COLORS["default"]))
+            to_return.append((i[:width - 1] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
 
         return to_return
 
