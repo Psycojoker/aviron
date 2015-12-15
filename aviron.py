@@ -66,11 +66,12 @@ class Cursor(object):
     def __init__(self, red):
         self.red = red
         self.current = red[0]
-        self.bounding_box = red[0].absolute_bounding_box
 
     def get_cursor_square(self):
-        left1, right1 = self.bounding_box.top_left.to_tuple()
-        left2, right2 = self.bounding_box.bottom_right.to_tuple()
+        bounding_box = self.current.absolute_bounding_box
+
+        left1, right1 = bounding_box.top_left.to_tuple()
+        left2, right2 = bounding_box.bottom_right.to_tuple()
         return left1 - 1, right1 - 1, left2 - 1, right2 - 1
 
 
