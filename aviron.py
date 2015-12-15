@@ -53,13 +53,19 @@ class RenderingBuffer(object):
 
     def get_window(self, size):
         height, width = size
+        height -= 1
+        width -= 1
 
         y1, x1, y2, x2 = self.cursor.get_cursor_square()
+
+        # avoid drawing outside of the window
+        x1 = min((x1, width))
+        x2 = min((x2, width))
 
         to_return = []
 
         for line_number, i in enumerate(self.buffer.split("\n")):
-            if line_number >= height:
+            if line_number > height:
                 break
 
             if y1 == line_number == y2:
@@ -67,23 +73,23 @@ class RenderingBuffer(object):
                     to_return.append((i[:x1], COLORS["default"]))
 
                 to_return.append((i[x1:x2], COLORS["selected"]))
-                to_return.append((i[x2:] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
+                to_return.append((i[x2:width] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
 
             elif y1 == line_number:
                 if x1 != 0:
                     to_return.append((i[:x1], COLORS["default"]))
-                to_return.append((i[x1:] + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
+                to_return.append((i[x1:width] + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
 
             elif y1 < line_number < y2:
-                to_return.append((i + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
+                to_return.append((i[:width] + ("\n" if line_number != height - 1 else ""), COLORS["selected"]))
 
             elif line_number == y2:
                 to_return.append((i[:x2], COLORS["selected"]))
-                to_return.append((i[x2:] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
+                to_return.append((i[x2:width] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
 
             else:
                 # don't add a "\n" at the end of window, otherwise curses crash
-                to_return.append((i[:width - 1] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
+                to_return.append((i[:width] + ("\n" if line_number != height - 1 else ""), COLORS["default"]))
 
         return to_return
 
