@@ -44,7 +44,7 @@ class RenderingBuffer(object):
     def get_window(self, size):
         height, width = size
 
-        x1, y1, x2, y2 = self.cursor.get_cursor_square()
+        y1, x1, y2, x2 = self.cursor.get_cursor_square()
 
         to_return = []
 
@@ -65,7 +65,9 @@ class Cursor(object):
         self.bounding_box = red[0].absolute_bounding_box
 
     def get_cursor_square(self):
-        return map(lambda x: x - 1, self.bounding_box.top_left), map(lambda x: x - 1, self.bounding_box.bottom_right)
+        left1, right1 = self.bounding_box.top_left.to_tuple()
+        left2, right2 = self.bounding_box.bottom_right.to_tuple()
+        return left1 - 1, right1 - 1, left2 - 1, right2 - 1
 
 
 def main(ncurse_window):
