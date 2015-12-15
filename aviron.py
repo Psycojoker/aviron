@@ -15,7 +15,8 @@ def init_colors():
 
 class Window(object):
     def __init__(self, ncurse_window, red):
-        self.rendering_buffer = RenderingBuffer(red)
+        self.cursor = Cursor(red)
+        self.rendering_buffer = RenderingBuffer(red, cursor=self.cursor)
         self.ncurse_window = ncurse_window
 
     def render(self):
@@ -32,14 +33,23 @@ class Window(object):
     def loop(self):
         while 42:
             self.render()
-            self.ncurse_window.getch()
+            key = self.ncurse_window.getch()
+
+            if key != curses.KEY_RESIZE:
+                self.handle_input(chr(key))
+
+    def handle_input(self, key):
+        if key == "j":
+            self.cursor.go_down()
+        elif key == "k":
+            self.cursor.go_up()
 
 
 class RenderingBuffer(object):
-    def __init__(self, red):
+    def __init__(self, red, cursor):
         self.red = red
         self.buffer = red.dumps()
-        self.cursor = Cursor(red)
+        self.cursor = cursor
 
     def get_window(self, size):
         height, width = size
@@ -73,6 +83,12 @@ class Cursor(object):
         left1, right1 = bounding_box.top_left.to_tuple()
         left2, right2 = bounding_box.bottom_right.to_tuple()
         return left1 - 1, right1 - 1, left2 - 1, right2 - 1
+
+    def go_down(self):
+        self.current = self.current.next
+
+    def go_up(self):
+        self.current = self.current.previous
 
 
 def main(ncurse_window):
