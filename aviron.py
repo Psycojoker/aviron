@@ -85,10 +85,10 @@ class Cursor(object):
         return left1 - 1, right1 - 1, left2 - 1, right2 - 1
 
     def go_down(self):
-        self.current = self.current.next
+        self.current = self.current.next if self.current.next is not None else self.current
 
     def go_up(self):
-        self.current = self.current.previous
+        self.current = self.current.previous if self.current.previous is not None else self.current
 
 
 def main(ncurse_window):
