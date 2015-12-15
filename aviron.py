@@ -107,10 +107,19 @@ class Cursor(object):
         return y1 - 1, x1 - 1, y2 - 1, x2
 
     def go_down(self):
-        self.current = self.current.next if self.current.next is not None else self.current
+        while self.current.next is not None:
+            self.current = self.current.next
+
+            if self.current.type != "endl":
+                break
 
     def go_up(self):
-        self.current = self.current.previous if self.current.previous is not None else self.current
+        while self.current.previous is not None:
+            self.current = self.current.previous
+
+            if self.current.type != "endl":
+                break
+
 
 
 def main(ncurse_window):
