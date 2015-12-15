@@ -20,12 +20,12 @@ class Window(object):
 
     def render(self):
         first = True
-        for i in self.rendering_buffer.get_window(size=self.ncurse_window.getmaxyx()):
+        for i, color in self.rendering_buffer.get_window(size=self.ncurse_window.getmaxyx()):
             if first:
-                self.ncurse_window.addstr(0, 0, i)
+                self.ncurse_window.addstr(0, 0, i, color)
                 first = False
             else:
-                self.ncurse_window.addstr(i)
+                self.ncurse_window.addstr(i, color)
 
         self.ncurse_window.refresh()
 
@@ -49,7 +49,7 @@ class RenderingBuffer(object):
             if line_number >= height:
                 break
 
-            to_return.append(i[:width - 1] + "\n")
+            to_return.append((i[:width - 1] + "\n", COLORS["default"]))
 
         return to_return
 
