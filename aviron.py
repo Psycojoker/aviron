@@ -37,6 +37,7 @@ class RenderingBuffer(object):
 
 
 def main(ncurse_window):
+    curses.curs_set(0)
     red = RedBaron(open(__file__, "r").read())
     Window(ncurse_window=ncurse_window, red=red).loop()
 
