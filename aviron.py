@@ -8,7 +8,14 @@ class Window(object):
         self.ncurse_window = ncurse_window
 
     def render(self):
-        self.ncurse_window.addstr(0, 0, self.rendering_buffer.get_window(size=self.ncurse_window.getmaxyx()))
+        first = True
+        for i in self.rendering_buffer.get_window(size=self.ncurse_window.getmaxyx()):
+            if first:
+                self.ncurse_window.addstr(0, 0, i)
+                first = False
+            else:
+                self.ncurse_window.addstr(i)
+
         self.ncurse_window.refresh()
 
     def loop(self):
@@ -31,9 +38,9 @@ class RenderingBuffer(object):
             if line_number >= height:
                 break
 
-            to_return.append(i[:width - 1])
+            to_return.append(i[:width - 1] + "\n")
 
-        return "\n".join(to_return)
+        return to_return
 
 
 def main(ncurse_window):
